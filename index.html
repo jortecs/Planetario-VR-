@@ -10,7 +10,11 @@
         AFRAME.registerComponent('orbit', {
             schema: {
                 radius: {type: 'number', default: 25},
+<<<<<<< HEAD
                 speed: {type: 'number', default: 1},
+=======
+                speed: {type: 'number', default: 0.2}, // Reducido para traslación más lenta
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
                 startAngle: {type: 'number', default: 0}
             },
             init: function() {
@@ -52,7 +56,11 @@
         AFRAME.registerComponent('luna-orbit', {
             schema: {
                 radius: {type: 'number', default: 800},
+<<<<<<< HEAD
                 speed: {type: 'number', default: 0.3},
+=======
+                speed: {type: 'number', default: 0.06}, // Reducido para traslación más lenta
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
                 startAngle: {type: 'number', default: 0}
             },
             init: function() {
@@ -127,7 +135,11 @@
         // Componente para movimiento del OVNI entre planetas (OPTIMIZADO)
         AFRAME.registerComponent('ufo-patrol', {
             schema: {
+<<<<<<< HEAD
                 speed: {type: 'number', default: 0.08} // Velocidad moderada
+=======
+                speed: {type: 'number', default: 0.02} // Velocidad más lenta
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
             },
             init: function() {
                 this.time = 0;
@@ -543,11 +555,18 @@
             <img id="saturnModelDiffuse" src="./src/saturn (1)/textures/Material.002_diffuse.jpeg">
             <img id="saturnModelRing" src="./src/saturn (1)/textures/ring_diffuse.jpeg">
             <!-- Modelo 3D del OVNI de Bob Lazar -->
+<<<<<<< HEAD
             <a-asset-item id="bobLazarUfo" src="./src/bob_lazar_ufo.glb"></a-asset-item>
             <!-- Modelo 3D del signo de interrogación -->
             <a-asset-item id="questionMarkModel" src="./src/high_poly_question_mark.glb"></a-asset-item>
             <a-asset-item id="sunModel" src="./src/sun/sun.glb"></a-asset-item>
             <a-asset-item id="meteoriteModel" src="./src/meteorite.glb"></a-asset-item>
+=======
+            <a-asset-item id="bobLazarUfo" src="public/assets/bob_lazar_ufo.glb"></a-asset-item>
+            <!-- Modelo 3D del signo de interrogación -->
+            <a-asset-item id="questionMarkModel" src="./src/high_poly_question_mark.glb"></a-asset-item>
+            <a-asset-item id="sunModel" src="./src/sun/sun.glb"></a-asset-item>
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-assets>
 
 
@@ -636,7 +655,11 @@
             id="luz-sol-puntual"
             type="point" 
             position="0 2 0"
+<<<<<<< HEAD
             color="#ffffff" 
+=======
+            color="#ffe0cc" 
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
             intensity="2" 
             distance="1000000"
             decay="0.1">
@@ -658,7 +681,11 @@
             animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
             planet-info="planet: mercurio"
             class="interactivo"
+<<<<<<< HEAD
             orbit="radius: 2000; speed: 0.16; startAngle: 0">
+=======
+            orbit="radius: 2000; speed: 0.03; startAngle: 0">
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
         <!-- Venus -->
@@ -669,7 +696,11 @@
             animation="property: rotation; to: 0 360 0; dur: 30000; loop: true; easing: linear"
             planet-info="planet: venus"
             class="interactivo"
+<<<<<<< HEAD
             orbit="radius: 3200; speed: 0.12; startAngle: 0.5">
+=======
+            orbit="radius: 3200; speed: 0.025; startAngle: 0.5">
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
         <!-- Tierra (con órbita alrededor del Sol) -->
@@ -680,7 +711,11 @@
             animation="property: rotation; to: 0 360 0; dur: 40000; loop: true; easing: linear"
             planet-info="planet: tierra"
             class="interactivo"
+<<<<<<< HEAD
             orbit="radius: 4800; speed: 0.1; startAngle: 1.2">
+=======
+            orbit="radius: 4800; speed: 0.02; startAngle: 1.2">
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
 
             <!-- Luna (hija de la Tierra, con órbita propia) -->
             <a-sphere 
@@ -688,7 +723,11 @@
                 radius="80"
                 material="src: #lunaTexture; shader: standard; metalness: 0.1; roughness: 0.95; envMapIntensity: 1.0; emissive: #c0c0c0; emissiveIntensity: 0.005"
                 animation="property: rotation; to: 0 360 0; dur: 120000; loop: true; easing: linear"
+<<<<<<< HEAD
                 luna-orbit="radius: 800; speed: 0.3; startAngle: 0"
+=======
+                luna-orbit="radius: 800; speed: 0.04; startAngle: 0"
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
                 planet-info="planet: luna"
                 class="interactivo">
             </a-sphere>
@@ -702,7 +741,11 @@
             animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
             planet-info="planet: marte"
             class="interactivo"
+<<<<<<< HEAD
             orbit="radius: 6500; speed: 0.08; startAngle: 2.1">
+=======
+            orbit="radius: 6500; speed: 0.016; startAngle: 2.1">
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
         <!-- Júpiter -->
@@ -713,7 +756,11 @@
             animation="property: rotation; to: 0 360 0; dur: 80000; loop: true; easing: linear"
             planet-info="planet: jupiter"
             class="interactivo"
+<<<<<<< HEAD
             orbit="radius: 8000; speed: 0.05; startAngle: 2.8">
+=======
+            orbit="radius: 8000; speed: 0.01; startAngle: 2.8">
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
 
@@ -727,12 +774,17 @@
             animation="property: rotation; to: 0 360 0; dur: 80000; loop: true; easing: linear"
             planet-info="planet: saturno"
             class="interactivo"
+<<<<<<< HEAD
             orbit="radius: 9500; speed: 0.03; startAngle: 3.5">
+=======
+            orbit="radius: 9500; speed: 0.006; startAngle: 3.5">
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-entity>
 
         <!-- OVNI de Bob Lazar -->
         <a-entity 
             id="bob-lazar-ufo"
+<<<<<<< HEAD
             position="0 2 3000"
             scale="100 100 100"
             gltf-model="#bobLazarUfo"
@@ -753,6 +805,19 @@
             class="interactivo">
             <a-light type="point" color="#ffae42" intensity="3.5" distance="1200" decay="2" castShadow="false" position="0 0 0"></a-light>
         </a-entity>
+=======
+            position="0 10 0"
+            scale="18 18 18"
+            gltf-model="#bobLazarUfo"
+            ufo-patrol="speed: 0.05"
+            ufo-textures
+            disable-interaction>
+            <!-- Luz blanca para iluminar el OVNI sin teñirlo de rojo -->
+            <a-light type="point" color="#ffffff" intensity="10" distance="500" decay="2" position="0 18 0"></a-light>
+        </a-entity>
+        <!-- Luz puntual para iluminar el OVNI -->
+        <a-light type="point" color="#a21006" intensity="5" distance="2000" decay="2" position="0 20 0"></a-light>
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
 
         <!-- Urano (restaurado a esfera original) -->
         <a-sphere 
@@ -762,7 +827,11 @@
             animation="property: rotation; to: 0 360 0; dur: 125000; loop: true; easing: linear"
             planet-info="planet: urano"
             class="interactivo"
+<<<<<<< HEAD
             orbit="radius: 12000; speed: 0.02; startAngle: 4.1">
+=======
+            orbit="radius: 12000; speed: 0.004; startAngle: 4.1">
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
             <!-- Anillo vertical de Urano con textura y ajustes personalizados -->
             <a-ring 
                 radius-inner="600" 
@@ -781,7 +850,11 @@
             animation="property: rotation; to: 0 360 0; dur: 150000; loop: true; easing: linear"
             planet-info="planet: neptuno"
             class="interactivo"
+<<<<<<< HEAD
             orbit="radius: 14000; speed: 0.01; startAngle: 4.7">
+=======
+            orbit="radius: 14000; speed: 0.002; startAngle: 4.7">
+>>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
 
