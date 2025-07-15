@@ -92,7 +92,7 @@
                                     // Aplicar textura de Saturno al planeta (primer material)
                                     if (material.name === 'Material.002' || child.name.includes('Material.002')) {
                                         console.log('Aplicando textura de planeta a:', child.name);
-                                        textureLoader.load('./src/saturn (1)/textures/Material.002_diffuse.jpeg', (texture) => {
+                                        textureLoader.load('assets/saturn/textures/Material.002_diffuse.jpeg', (texture) => {
                                             material.map = texture;
                                             material.needsUpdate = true;
                                             console.log('Textura de planeta aplicada');
@@ -101,7 +101,7 @@
                                     // Aplicar textura de anillos (segundo material)
                                     else if (material.name.includes('ring') || child.name.includes('ring') || child.name.includes('rings')) {
                                         console.log('Aplicando textura de anillos a:', child.name);
-                                        textureLoader.load('./src/saturn (1)/textures/ring_diffuse.jpeg', (texture) => {
+                                        textureLoader.load('assets/saturn/textures/ring_diffuse.jpeg', (texture) => {
                                             material.map = texture;
                                             material.needsUpdate = true;
                                             console.log('Textura de anillos aplicada');
@@ -110,7 +110,7 @@
                                     // Si no coincide con ninguno, aplicar textura de planeta por defecto
                                     else {
                                         console.log('Aplicando textura de planeta por defecto a:', child.name);
-                                        textureLoader.load('./src/saturn (1)/textures/Material.002_diffuse.jpeg', (texture) => {
+                                        textureLoader.load('assets/saturn/textures/Material.002_diffuse.jpeg', (texture) => {
                                             material.map = texture;
                                             material.needsUpdate = true;
                                             console.log('Textura de planeta aplicada por defecto');
@@ -523,31 +523,31 @@
             <!-- Texturas para las paredes -->
             <img id="wallTexture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==">
             <!-- Textura del Sol -->
-            <img id="sunTexture" src="/Planetario-VR-/assets/8k_sun-Cutma8LX.jpg">
+            <img id="sunTexture" src="assets/8k_sun.jpg">
             <!-- Textura del fondo estrellado -->
-            <img id="starsTexture" src="./src/textures/8k_stars_milky_way.jpg">
+            <img id="starsTexture" src="assets/textures/8k_stars_milky_way.jpg">
             <!-- Texturas de planetas -->
-            <img id="tierraTexture" src="/Planetario-VR-/assets/8081_earthmap10k-DfVUB-Iw.jpg">
-            <img id="lunaTexture" src="/Planetario-VR-/assets/moon_baseColor-CYV67Re8.jpeg">
-            <img id="mercurioTexture" src="/Planetario-VR-/assets/mercury_baseColor-D_b63v2F.jpeg">
-            <img id="venusTexture" src="/Planetario-VR-/assets/venus_baseColor-Woq6JG4L.jpeg">
-            <img id="saturnoTexture" src="/Planetario-VR-/assets/saturn_baseColor-CATlQKv_.jpeg">
-            <img id="saturnRingsTexture" src="./src/textures/saturn_ring_baseColor.jpeg">
-            <img id="uranusTexture" src="/Planetario-VR-/assets/uranus_baseColor-Cgt3IUcA.jpeg">
-            <img id="neptuneTexture" src="/Planetario-VR-/assets/neptune_baseColor-DoHLX40_.jpeg">
-            <img id="marsTexture" src="/Planetario-VR-/assets/mars_baseColor-Bz6rcOTP.jpeg">
-            <img id="jupiterTexture" src="/Planetario-VR-/assets/jupiter_baseColor-CmhSzCRH.jpeg">
+            <img id="tierraTexture" src="assets/textures/8081_earthmap10k.jpg">
+            <img id="lunaTexture" src="assets/textures/moon_baseColor.jpeg">
+            <img id="mercurioTexture" src="assets/textures/mercury_baseColor.jpeg">
+            <img id="venusTexture" src="assets/textures/venus_baseColor.jpeg">
+            <img id="saturnoTexture" src="assets/textures/saturn_baseColor.jpeg">
+            <img id="saturnRingsTexture" src="assets/textures/saturn_ring_baseColor.jpeg">
+            <img id="uranusTexture" src="assets/textures/uranus_baseColor.jpeg">
+            <img id="neptuneTexture" src="assets/textures/neptune_baseColor.jpeg">
+            <img id="marsTexture" src="assets/textures/mars_baseColor.jpeg">
+            <img id="jupiterTexture" src="assets/textures/jupiter_baseColor.jpeg">
             <!-- Modelo 3D de Saturno -->
-            <a-asset-item id="saturnModel" src="./src/saturn (1)/scene.gltf"></a-asset-item>
+            <a-asset-item id="saturnModel" src="assets/saturn/scene.gltf"></a-asset-item>
             <!-- Texturas del modelo Saturno -->
-            <img id="saturnModelDiffuse" src="/Planetario-VR-/assets/Material.002_diffuse-BCMVOkN7.jpeg">
-            <img id="saturnModelRing" src="/Planetario-VR-/assets/ring_diffuse-DHLLaqtJ.jpeg">
+            <img id="saturnModelDiffuse" src="assets/saturn/textures/Material.002_diffuse.jpeg">
+            <img id="saturnModelRing" src="assets/saturn/textures/ring_diffuse.jpeg">
             <!-- Modelo 3D del OVNI de Bob Lazar -->
-            <a-asset-item id="bobLazarUfo" src="public/assets/bob_lazar_ufo.glb"></a-asset-item>
+            <a-asset-item id="bobLazarUfo" src="assets/bob_lazar_ufo.glb"></a-asset-item>
             <!-- Modelo 3D del signo de interrogación -->
-            <a-asset-item id="questionMarkModel" src="./src/high_poly_question_mark.glb"></a-asset-item>
-            <a-asset-item id="sunModel" src="./src/sun/sun.glb"></a-asset-item>
-            <a-asset-item id="meteoriteModel" src="./src/meteorite.glb"></a-asset-item>
+            <a-asset-item id="questionMarkModel" src="assets/high_poly_question_mark.glb"></a-asset-item>
+            <a-asset-item id="sunModel" src="assets/sun/sun.glb"></a-asset-item>
+            <a-asset-item id="meteoriteModel" src="assets/meteorite.glb"></a-asset-item>
         </a-assets>
 
 
