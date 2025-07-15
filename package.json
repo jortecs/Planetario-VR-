@@ -1,0 +1,23 @@
+{
+  "name": "escenario-4-paredes-aframe",
+  "version": "1.0.0",
+  "description": "Escenario virtual de 4 paredes creado con A-Frame.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "keywords": [
+    "aframe",
+    "vr",
+    "webvr",
+    "3d",
+    "escenario"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT"
+} 

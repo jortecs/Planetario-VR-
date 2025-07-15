@@ -1,0 +1,125 @@
+/* Estilos para el escenario de A-Frame (OPTIMIZADO) */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #000011; /* Color sólido en lugar de gradiente para mejor performance */
+    overflow: hidden;
+    /* Optimizaciones de rendimiento */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.9); /* Más opaco para evitar blur */
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    /* backdrop-filter: blur(10px); */ /* Comentado para mejor performance */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); /* Sombra más simple */
+}
+
+.info h3 {
+    margin: 0 0 15px 0;
+    color: #4CAF50;
+    font-size: 18px;
+}
+
+.info p {
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.controls-info {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.9); /* Más opaco para evitar blur */
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    z-index: 1000;
+    /* backdrop-filter: blur(10px); */ /* Comentado para mejor performance */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.controls-info h4 {
+    margin: 0 0 10px 0;
+    color: #FFD700;
+    font-size: 16px;
+}
+
+.controls-info ul {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13px;
+}
+
+.controls-info li {
+    margin: 5px 0;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.info, .controls-info {
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .info {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        padding: 15px;
+    }
+    
+    .controls-info {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        padding: 12px;
+    }
+    
+    .info h3 {
+        font-size: 16px;
+    }
+    
+    .info p {
+        font-size: 12px;
+    }
+} 
+#planet-info-panel button {
+    background: #d1aaff !important;
+    color: #fff !important;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(209,170,255,0.2);
+    transition: background 0.2s;
+}
+#planet-info-panel button:hover {
+    background: #b47aff !important;
+} 
