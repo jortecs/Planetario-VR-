@@ -620,16 +620,15 @@
 
         <!-- SISTEMA SOLAR GIGANTE CON ÓRBITAS REALISTAS -->
         
-        <!-- Sol (centro) con modelo GLTF -->
-        <a-entity 
+        <!-- Sol (centro) con textura -->
+        <a-sphere 
             id="sol-nucleo"
             position="0 2 0" 
-            scale="66 66 66"
-            gltf-model="#sunModel"
+            radius="500"
+            material="src: #sunTexture; shader: standard; emissive: #ff6600; emissiveIntensity: 0.3; metalness: 0.1; roughness: 0.8"
             animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
-            class="interactivo"
-            sun-glow>
-        </a-entity>
+            class="interactivo">
+        </a-sphere>
 
         <!-- Luz del sol (puntual) - BLANCA -->
         <a-light 
@@ -658,7 +657,7 @@
             animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
             planet-info="planet: mercurio"
             class="interactivo"
-            orbit="radius: 2000; speed: 0.16; startAngle: 0">
+            orbit="radius: 2000; speed: 0.03; startAngle: 0">
         </a-sphere>
 
         <!-- Venus -->
@@ -669,7 +668,7 @@
             animation="property: rotation; to: 0 360 0; dur: 30000; loop: true; easing: linear"
             planet-info="planet: venus"
             class="interactivo"
-            orbit="radius: 3200; speed: 0.12; startAngle: 0.5">
+            orbit="radius: 3200; speed: 0.025; startAngle: 0.5">
         </a-sphere>
 
         <!-- Tierra (con órbita alrededor del Sol) -->
@@ -680,7 +679,7 @@
             animation="property: rotation; to: 0 360 0; dur: 40000; loop: true; easing: linear"
             planet-info="planet: tierra"
             class="interactivo"
-            orbit="radius: 4800; speed: 0.1; startAngle: 1.2">
+            orbit="radius: 4800; speed: 0.02; startAngle: 1.2">
 
             <!-- Luna (hija de la Tierra, con órbita propia) -->
             <a-sphere 
@@ -688,7 +687,7 @@
                 radius="80"
                 material="src: #lunaTexture; shader: standard; metalness: 0.1; roughness: 0.95; envMapIntensity: 1.0; emissive: #c0c0c0; emissiveIntensity: 0.005"
                 animation="property: rotation; to: 0 360 0; dur: 120000; loop: true; easing: linear"
-                luna-orbit="radius: 800; speed: 0.04; startAngle: 0"
+                luna-orbit="radius: 800; speed: 0.06; startAngle: 0"
                 planet-info="planet: luna"
                 class="interactivo">
             </a-sphere>
@@ -702,7 +701,7 @@
             animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
             planet-info="planet: marte"
             class="interactivo"
-            orbit="radius: 6500; speed: 0.08; startAngle: 2.1">
+            orbit="radius: 6500; speed: 0.016; startAngle: 2.1">
         </a-sphere>
 
         <!-- Júpiter -->
@@ -713,7 +712,7 @@
             animation="property: rotation; to: 0 360 0; dur: 80000; loop: true; easing: linear"
             planet-info="planet: jupiter"
             class="interactivo"
-            orbit="radius: 8000; speed: 0.05; startAngle: 2.8">
+            orbit="radius: 8000; speed: 0.01; startAngle: 2.8">
         </a-sphere>
 
 
@@ -727,20 +726,23 @@
             animation="property: rotation; to: 0 360 0; dur: 80000; loop: true; easing: linear"
             planet-info="planet: saturno"
             class="interactivo"
-            orbit="radius: 9500; speed: 0.03; startAngle: 3.5">
+            orbit="radius: 9500; speed: 0.006; startAngle: 3.5">
         </a-entity>
 
         <!-- OVNI de Bob Lazar -->
         <a-entity 
             id="bob-lazar-ufo"
-            position="0 2 3000"
-            scale="100 100 100"
+            position="0 10 0"
+            scale="18 18 18"
             gltf-model="#bobLazarUfo"
-            ufo-patrol="speed: 0.15"
+            ufo-patrol="speed: 0.05"
             ufo-textures
             disable-interaction>
-            <a-light type="point" color="#a21006" intensity="2.97" distance="800" decay="2" castShadow="false" position="0 2 0"></a-light>
+            <!-- Luz blanca para iluminar el OVNI sin teñirlo de rojo -->
+            <a-light type="point" color="#ffffff" intensity="10" distance="500" decay="2" position="0 18 0"></a-light>
         </a-entity>
+        <!-- Luz puntual para iluminar el OVNI -->
+        <a-light type="point" color="#a21006" intensity="5" distance="2000" decay="2" position="0 20 0"></a-light>
 
         <!-- Meteorito flotante y girando -->
         <a-entity 
@@ -762,7 +764,7 @@
             animation="property: rotation; to: 0 360 0; dur: 125000; loop: true; easing: linear"
             planet-info="planet: urano"
             class="interactivo"
-            orbit="radius: 12000; speed: 0.02; startAngle: 4.1">
+            orbit="radius: 12000; speed: 0.004; startAngle: 4.1">
             <!-- Anillo vertical de Urano con textura y ajustes personalizados -->
             <a-ring 
                 radius-inner="600" 
@@ -781,7 +783,7 @@
             animation="property: rotation; to: 0 360 0; dur: 150000; loop: true; easing: linear"
             planet-info="planet: neptuno"
             class="interactivo"
-            orbit="radius: 14000; speed: 0.01; startAngle: 4.7">
+            orbit="radius: 14000; speed: 0.002; startAngle: 4.7">
         </a-sphere>
 
 
