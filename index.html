@@ -1,556 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sistema Solar(vr)</title>
+    <title>Escenario 4 Paredes - A-Frame</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script>
-        // Componente para órbitas circulares
-        AFRAME.registerComponent('orbit', {
-            schema: {
-                radius: {type: 'number', default: 25},
-                speed: {type: 'number', default: 1},
-                startAngle: {type: 'number', default: 0}
-            },
-            init: function() {
-                this.angle = this.data.startAngle;
-                this.center = new THREE.Vector3(0, 2, 0);
-            },
-            tick: function(time, deltaTime) {
-                this.angle += (this.data.speed * deltaTime) / 1000;
-                const x = this.center.x + this.data.radius * Math.cos(this.angle);
-                const z = this.center.z + this.data.radius * Math.sin(this.angle);
-                this.el.setAttribute('position', {x: x, y: this.center.y, z: z});
-            }
-        });
-
-        // Componente para crear estrellas lejanas (OPTIMIZADO)
-        AFRAME.registerComponent('starfield', {
-            init: function() {
-                const scene = this.el;
-                // Reducir de 5000 a 1000 estrellas para mejor performance
-                for (let i = 0; i < 1000; i++) {
-                    const star = document.createElement('a-sphere');
-                    // Posición aleatoria en una esfera muy lejana y dispersa
-                    const radius = 8000 + Math.random() * 8000;
-                    const theta = Math.random() * Math.PI * 2;
-                    const phi = Math.acos(Math.random() * 2 - 1);
-                    const x = radius * Math.sin(phi) * Math.cos(theta);
-                    const y = radius * Math.sin(phi) * Math.sin(theta);
-                    const z = radius * Math.cos(phi);
-                    star.setAttribute('position', `${x} ${y} ${z}`);
-                    star.setAttribute('radius', '8'); // Reducir tamaño
-                    // Material más simple
-                    star.setAttribute('material', `shader: flat; color: #ffffff; emissive: #ffffff; emissiveIntensity: 8`);
-                    scene.appendChild(star);
-                }
-            }
-        });
-
-        // Componente para órbita de la luna alrededor de la Tierra
-        AFRAME.registerComponent('luna-orbit', {
-            schema: {
-                radius: {type: 'number', default: 800},
-                speed: {type: 'number', default: 0.3},
-                startAngle: {type: 'number', default: 0}
-            },
-            init: function() {
-                this.angle = this.data.startAngle;
-            },
-            tick: function(time, deltaTime) {
-                this.angle += (this.data.speed * deltaTime) / 1000;
-                // Como la Luna es hija de la Tierra, orbita respecto al origen local
-                const x = this.data.radius * Math.cos(this.angle);
-                const z = this.data.radius * Math.sin(this.angle);
-                this.el.setAttribute('position', {
-                    x: x,
-                    y: 0,
-                    z: z
-                });
-            }
-        });
-
-
-
-
-
-        // Componente para aplicar texturas al modelo de Saturno
-        AFRAME.registerComponent('saturn-textures', {
-            init: function() {
-                this.el.addEventListener('model-loaded', () => {
-                    const model = this.el.getObject3D('mesh');
-                    if (model) {
-                        console.log('Modelo cargado, aplicando texturas...');
-                        model.traverse((child) => {
-                            if (child.isMesh) {
-                                console.log('Encontrado mesh:', child.name, 'Material:', child.material.name);
-                                const material = child.material;
-                                if (material) {
-                                    const textureLoader = new THREE.TextureLoader();
-                                    
-                                    // Aplicar textura de Saturno al planeta (primer material)
-                                    if (material.name === 'Material.002' || child.name.includes('Material.002')) {
-                                        console.log('Aplicando textura de planeta a:', child.name);
-                                        textureLoader.load('/assets/Material.002_diffuse-BCMVOkN7.jpeg', (texture) => {
-                                            material.map = texture;
-                                            material.needsUpdate = true;
-                                            console.log('Textura de planeta aplicada');
-                                        });
-                                    }
-                                    // Aplicar textura de anillos (segundo material)
-                                    else if (material.name.includes('ring') || child.name.includes('ring') || child.name.includes('rings')) {
-                                        console.log('Aplicando textura de anillos a:', child.name);
-                                        textureLoader.load('/assets/ring_diffuse-DHLLaqtJ.jpeg', (texture) => {
-                                            material.map = texture;
-                                            material.needsUpdate = true;
-                                            console.log('Textura de anillos aplicada');
-                                        });
-                                    }
-                                    // Si no coincide con ninguno, aplicar textura de planeta por defecto
-                                    else {
-                                        console.log('Aplicando textura de planeta por defecto a:', child.name);
-                                        textureLoader.load('/assets/Material.002_diffuse-BCMVOkN7.jpeg', (texture) => {
-                                            material.map = texture;
-                                            material.needsUpdate = true;
-                                            console.log('Textura de planeta aplicada por defecto');
-                                        });
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
-
-        // Componente para movimiento del OVNI entre planetas (OPTIMIZADO)
-        AFRAME.registerComponent('ufo-patrol', {
-            schema: {
-                speed: {type: 'number', default: 0.08} // Velocidad moderada
-            },
-            init: function() {
-                this.time = 0;
-                this.currentTarget = 0;
-                
-                // Posiciones de los planetas para visitar
-                this.planets = [
-                    {x: 2000, y: 2, z: 0},      // Mercurio
-                    {x: -3200, y: 2, z: 0},     // Venus
-                    {x: 0, y: 2, z: 4800},      // Tierra
-                    {x: -4215.99302, y: 2, z: 3337.77691}, // Marte
-                    {x: 8000, y: 2, z: 0},      // Júpiter
-                    {x: -10000, y: 2, z: 0},    // Saturno
-                    {x: 0, y: 2, z: 12000},     // Urano
-                    {x: 0, y: 2, z: -8570.32149} // Neptuno
-                ];
-                
-                this.currentPos = {x: 0, y: 2, z: 3000}; // Posición inicial
-            },
-            tick: function(time, deltaTime) {
-                this.time += deltaTime * this.data.speed;
-                
-                // Calcular posición actual basada en el tiempo
-                const totalPlanets = this.planets.length;
-                const timePerPlanet = 12000; // 12 segundos por planeta
-                const currentTime = this.time % (totalPlanets * timePerPlanet);
-                const currentPlanetIndex = Math.floor(currentTime / timePerPlanet);
-                const nextPlanetIndex = (currentPlanetIndex + 1) % totalPlanets;
-                const progress = (currentTime % timePerPlanet) / timePerPlanet;
-                
-                const currentPlanet = this.planets[currentPlanetIndex];
-                const nextPlanet = this.planets[nextPlanetIndex];
-                
-                // Interpolación suave entre planetas
-                const x = currentPlanet.x + (nextPlanet.x - currentPlanet.x) * progress;
-                const y = currentPlanet.y + 500 + Math.sin(this.time * 0.0008) * 200;
-                const z = currentPlanet.z + (nextPlanet.z - currentPlanet.z) * progress;
-                
-                this.el.setAttribute('position', {x: x, y: y, z: z});
-                
-                // Hacer que el OVNI mire hacia el planeta actual
-                const lookAt = new THREE.Vector3(currentPlanet.x, currentPlanet.y, currentPlanet.z);
-                const ufoPos = new THREE.Vector3(x, y, z);
-                const direction = lookAt.sub(ufoPos).normalize();
-                const angle = Math.atan2(direction.x, direction.z) * (180 / Math.PI);
-                this.el.setAttribute('rotation', {x: 0, y: angle, z: 0});
-            }
-        });
-
-        // Componente para aplicar texturas al OVNI
-        AFRAME.registerComponent('ufo-textures', {
-            init: function() {
-                this.el.addEventListener('model-loaded', () => {
-                    const model = this.el.getObject3D('mesh');
-                    if (model) {
-                        console.log('OVNI cargado, aplicando materiales...');
-                        model.traverse((child) => {
-                            if (child.isMesh) {
-                                console.log('OVNI mesh encontrado:', child.name);
-                                const material = child.material;
-                                if (material) {
-                                    // Crear un nuevo material con colores metálicos para el OVNI
-                                    const newMaterial = new THREE.MeshStandardMaterial({
-                                        color: 0x444444, // Gris metálico oscuro
-                                        metalness: 0.8,
-                                        roughness: 0.2,
-                                        emissive: 0x222222,
-                                        emissiveIntensity: 0.1,
-                                        side: THREE.DoubleSide
-                                    });
-                                    
-                                    // Aplicar el nuevo material
-                                    child.material = newMaterial;
-                                    child.material.needsUpdate = true;
-                                    
-                                    console.log('Nuevo material aplicado al OVNI');
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
-
-        // Componente para botones informativos de planetas (SIMPLIFICADO)
-        AFRAME.registerComponent('planet-info', {
-            schema: {
-                planet: {type: 'string', default: 'tierra'}
-            },
-            init: function() {
-                // Agregar evento de click directamente
-                this.el.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    console.log('Click en botón de planeta:', this.data.planet, 'Elemento:', this.el.id);
-                    this.showInfo();
-                });
-            },
-            showInfo: function() {
-                const planet = this.data.planet;
-                const data = this.infoData[planet];
-                
-                console.log('Mostrando información para planeta:', planet);
-                
-                if (data) {
-                    // Crear o actualizar el panel de información
-                    let infoPanel = document.getElementById('planet-info-panel');
-                    if (!infoPanel) {
-                        infoPanel = document.createElement('div');
-                        infoPanel.id = 'planet-info-panel';
-                        infoPanel.style.cssText = `
-                            position: fixed;
-                            top: 50%;
-                            left: 50%;
-                            transform: translate(-50%, -50%);
-                            background: rgba(0, 0, 0, 0.9);
-                            color: white;
-                            padding: 30px;
-                            border-radius: 15px;
-                            border: 2px solid #444;
-                            max-width: 500px;
-                            z-index: 1000;
-                            font-family: Arial, sans-serif;
-                            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-                        `;
-                        document.body.appendChild(infoPanel);
-                    }
-                    
-                    infoPanel.innerHTML = `
-                        <h2 style="color: ${data.color}; margin: 0 0 15px 0; font-size: 24px;">${data.title}</h2>
-                        <p style="margin: 0; line-height: 1.6; font-size: 16px;">${data.info}</p>
-                        <button onclick="this.parentElement.remove()" style="
-                            background: #444;
-                            color: white;
-                            border: none;
-                            padding: 10px 20px;
-                            margin-top: 15px;
-                            border-radius: 5px;
-                            cursor: pointer;
-                            font-size: 14px;
-                        ">Cerrar</button>
-                    `;
-                    // Asegurar que el botón de cerrar funcione siempre
-                    document.getElementById('close-info-btn').onclick = function() {
-                      document.getElementById('planet-info-panel').style.display = 'none';
-                    };
-                } else {
-                    console.error('No se encontró información para el planeta:', planet);
-                }
-            }
-        });
-
-        // Componente para desactivar clicks en planetas
-        AFRAME.registerComponent('no-click', {
-            init: function() {
-                // Desactivar completamente los eventos de click en este elemento
-                this.el.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    console.log('Click bloqueado en planeta:', this.el.id);
-                    return false;
-                });
-                
-                // Desactivar también eventos de mouseenter y mouseover
-                this.el.addEventListener('mouseenter', (event) => {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    console.log('Mouseenter bloqueado en planeta:', this.el.id);
-                    return false;
-                });
-                
-                this.el.addEventListener('mouseover', (event) => {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    console.log('Mouseover bloqueado en planeta:', this.el.id);
-                    return false;
-                });
-                
-                // Desactivar completamente el cursor para este elemento
-                this.el.setAttribute('cursor', 'rayOrigin: none');
-                
-                // Agregar clase para CSS
-                this.el.classList.add('no-interaction');
-                
-                // Desactivar también el componente de cursor de A-Frame
-                this.el.removeAttribute('cursor');
-                
-                // Hacer el elemento completamente no interactivo
-                this.el.setAttribute('class', 'no-interaction');
-            }
-        });
-
-        // Componente para debug de clicks
-        AFRAME.registerComponent('click-debug', {
-            init: function() {
-                this.el.addEventListener('click', (event) => {
-                    console.log('DEBUG CLICK - Elemento clickeado:', this.el.id || this.el.tagName, 'Planeta configurado:', this.el.getAttribute('planet-info')?.planet || 'NONE');
-                    console.log('DEBUG CLICK - Evento completo:', event);
-                });
-            }
-        });
-
-        // Componente para desactivar completamente la interactividad
-        AFRAME.registerComponent('disable-interaction', {
-            init: function() {
-                // Remover cualquier atributo de cursor
-                this.el.removeAttribute('cursor');
-                
-                // Desactivar todos los eventos de mouse
-                const events = ['click', 'mouseenter', 'mouseover', 'mouseleave', 'mousedown', 'mouseup'];
-                events.forEach(eventType => {
-                    this.el.addEventListener(eventType, (event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        console.log(`Evento ${eventType} bloqueado en:`, this.el.id);
-                        return false;
-                    });
-                });
-                
-                // Hacer el elemento completamente no interactivo
-                this.el.setAttribute('class', 'no-interaction');
-                
-                // Desactivar el raycasting para este elemento
-                this.el.setAttribute('cursor', 'rayOrigin: none');
-                
-                console.log('Interactividad desactivada para:', this.el.id);
-            }
-        });
-
-        // Componente para aplicar color amarillo y luz al modelo de signo de interrogación
-        AFRAME.registerComponent('question-mark-glow', {
-            init: function() {
-                this.el.addEventListener('model-loaded', () => {
-                    const model = this.el.getObject3D('mesh');
-                    if (model) {
-                        console.log('Modelo de signo de interrogación cargado, aplicando color amarillo...');
-                        model.traverse((child) => {
-                            if (child.isMesh) {
-                                console.log('Aplicando material amarillo a:', child.name);
-                                const material = child.material;
-                                if (material) {
-                                    // Aplicar color amarillo brillante
-                                    material.color.setHex(0xFFFF00); // Amarillo
-                                    material.emissive.setHex(0xFFFF00); // Emisión amarilla
-                                    material.emissiveIntensity = 0.5; // Intensidad de emisión
-                                    material.metalness = 0.8;
-                                    material.roughness = 0.2;
-                                    material.needsUpdate = true;
-                                    
-                                    console.log('Material amarillo aplicado');
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
-
-        // Componente para asegurar que los botones sean clickeables
-        AFRAME.registerComponent('clickable-button', {
-            init: function() {
-                // Asegurar que el elemento tenga cursor
-                this.el.setAttribute('cursor', 'rayOrigin: mouse');
-                
-                // Agregar evento de click adicional
-                this.el.addEventListener('click', (event) => {
-                    console.log('Click detectado en botón clickeable:', this.el.id);
-                });
-                
-                // Agregar evento de mouseenter para feedback visual
-                this.el.addEventListener('mouseenter', () => {
-                    console.log('Mouse sobre botón:', this.el.id);
-                });
-            }
-        });
-
-        // Función para salir del pointer lock
-        function exitPointerLock() {
-          if (document.exitPointerLock) {
-            document.exitPointerLock();
-          } else if (document.mozExitPointerLock) {
-            document.mozExitPointerLock();
-          } else if (document.webkitExitPointerLock) {
-            document.webkitExitPointerLock();
-          }
-        }
-        // Función para volver a entrar en pointer lock
-        function requestPointerLock() {
-          var scene = document.querySelector('a-scene').canvas;
-          if (scene && scene.requestPointerLock) {
-            scene.requestPointerLock();
-          } else if (scene && scene.mozRequestPointerLock) {
-            scene.mozRequestPointerLock();
-          } else if (scene && scene.webkitRequestPointerLock) {
-            scene.webkitRequestPointerLock();
-          }
-        }
-        // Hook para panel informativo de planetas
-        (function(){
-          const origShowInfo = AFRAME.components['planet-info'].Component.prototype.showInfo;
-          AFRAME.components['planet-info'].Component.prototype.showInfo = function() {
-            exitPointerLock();
-            origShowInfo.apply(this, arguments);
-            // Al mostrar el panel, salir del pointer lock
-            setTimeout(exitPointerLock, 100);
-            // Al cerrar el panel, volver a pointer lock
-            setTimeout(function() {
-              const panel = document.getElementById('planet-info-panel');
-              if (panel) {
-                const closeBtn = panel.querySelector('button');
-                if (closeBtn) {
-                  closeBtn.addEventListener('click', function() {
-                    setTimeout(requestPointerLock, 200);
-                  });
-                }
-              }
-            }, 200);
-          };
-        })();
-
-        // Componente para hacer que el Sol brille más
-        AFRAME.registerComponent('sun-glow', {
-          init: function() {
-            this.el.addEventListener('model-loaded', () => {
-              const model = this.el.getObject3D('mesh');
-              if (model) {
-                model.traverse((child) => {
-                  if (child.isMesh && child.material) {
-                    // Amarillo intenso y brillo fuerte
-                    
-                    child.material.emissiveIntensity = 1.8; // Brillo moderado
-                    child.material.emissive = new THREE.Color(0xFFFACD); // Amarillo claro
-                    // child.material.color = new THREE.Color(0xFFD700); // Puedes dejarlo comentado si quieres conservar la textura original
-                    child.material.needsUpdate = true;
-                  }
-                });
-              }
-            });
-          }
-        });
-
-        AFRAME.registerComponent('urano-textura', {
-          init: function() {
-            this.el.addEventListener('model-loaded', () => {
-              const model = this.el.getObject3D('mesh');
-              if (model) {
-                const textureLoader = new THREE.TextureLoader();
-                const textures = [
-                  '/assets/uranus_baseColor-Cgt3IUcA.jpeg',
-                  // '/src/uranus/material_0_metallicRoughness.png', // Si no existe, comentar o eliminar
-                  // '/src/uranus/material_1_baseColor.png' // Si no existe, comentar o eliminar
-                ];
-                textures.forEach((texPath) => {
-                  textureLoader.load(texPath, (texture) => {
-                    model.traverse((child) => {
-                      if (child.isMesh && child.material && !child.material.map) {
-                        child.material.map = texture;
-                        child.material.needsUpdate = true;
-                      }
-                    });
-                  });
-                });
-              }
-            });
-          }
-        });
-
-
-    </script>
-    <link rel="stylesheet" href="/Planetario-VR-/assets/index-ChRiL3_s.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <!-- Eliminar el crosshair -->
-    <!-- Eliminar el div y el style del crosshair -->
-    <a-scene background="color: #000011" 
-              renderer="far: 10000000; near: 0.00000000001; antialias: false; powerPreference: high-performance; precision: mediump"
-              vr-mode-ui="enabled: false"
-              inspector="url: https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js"
-              raycaster="objects: .interactivo">
+    <div style="position:fixed;top:0;left:0;width:100vw;padding:30px 0;text-align:center;font-size:2.5rem;background:yellow;color:red;z-index:9999;font-weight:bold;">PRUEBA DE CAMBIO VISIBLE</div>
+    <!-- <div class="info">
+        <h3>🏠 Escenario 4 Paredes</h3>
+        <p>Explora este espacio virtual interactivo</p>
+        <p>Usa los controles para moverte y explorar</p>
+    </div> -->
 
-        <!-- Eliminar el menú inicial de bienvenida -->
-        <!-- Eliminar el div con id="pantalla-inicio" y su lógica JS -->
+    <div class="controls-info">
+        <h4>🎮 Controles</h4>
+        <ul>
+            <li><strong>WASD:</strong> Movimiento</li>
+            <li><strong>Mouse:</strong> Mirar alrededor</li>
+            <li><strong>Click:</strong> Interactuar</li>
+        </ul>
+    </div>
 
-        <!-- Pantalla de pausa -->
-        <!-- Eliminar el div con id="pantalla-pausa" y toda la lógica JS asociada a la pausa (mostrarPausa, ocultarPausa, btnContinuar, etc). -->
+    <!-- Crosshair para escritorio -->
+    <style>
+      @media (pointer: fine) {
+        #crosshair {
+          position: fixed;
+          left: 50vw;
+          top: 50vh;
+          width: 32px;
+          height: 32px;
+          margin-left: -16px;
+          margin-top: -16px;
+          z-index: 9999;
+          pointer-events: none;
+        }
+        #crosshair:after {
+          content: '';
+          display: block;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          border: 2px solid white;
+          position: absolute;
+          left: 0; top: 0;
+          box-sizing: border-box;
+        }
+        #crosshair:before {
+          content: '';
+          display: block;
+          position: absolute;
+          left: 15px; top: 0;
+          width: 2px; height: 32px;
+          background: white;
+        }
+      }
+    </style>
+    <div id="crosshair"></div>
 
-        <!-- Campo de estrellas cercanas -->
-        <a-entity starfield></a-entity>
-
-
+    <a-scene>
         <!-- Configuración del entorno -->
         <a-assets>
             <!-- Texturas para las paredes -->
             <img id="wallTexture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==">
             <!-- Textura del Sol -->
-            <img id="sunTexture" src="/Planetario-VR-/8k_sun.jpg">
+            <img id="sunTexture" src="/assets/8k_sun-Cutma8LX.jpg">
             <!-- Textura del fondo estrellado -->
-            <img id="starsTexture" src="/Planetario-VR-/textures/8k_stars_milky_way.jpg">
+            <img id="starsTexture" src="/assets/8k_stars_milky_way-XXXXXX.jpg">
             <!-- Texturas de planetas -->
-            <img id="tierraTexture" src="/Planetario-VR-/assets/8081_earthmap10k-DfVUB-Iw.jpg">
-            <img id="lunaTexture" src="/Planetario-VR-/assets/moon_baseColor-CYV67Re8.jpeg">
-            <img id="mercurioTexture" src="/Planetario-VR-/assets/mercury_baseColor-D_b63v2F.jpeg">
-            <img id="venusTexture" src="/Planetario-VR-/assets/venus_baseColor-Woq6JG4L.jpeg">
-            <img id="saturnoTexture" src="/Planetario-VR-/assets/saturn_baseColor-CATlQKv_.jpeg">
-            <img id="saturnRingsTexture" src="/Planetario-VR-/assets/ring_diffuse-DHLLaqtJ.jpeg">
-            <img id="uranusTexture" src="/Planetario-VR-/assets/uranus_baseColor-Cgt3IUcA.jpeg">
-            <img id="neptuneTexture" src="/Planetario-VR-/assets/neptune_baseColor-DoHLX40_.jpeg">
-            <img id="marsTexture" src="/Planetario-VR-/assets/mars_baseColor-Bz6rcOTP.jpeg">
-            <img id="jupiterTexture" src="/Planetario-VR-/assets/jupiter_baseColor-CmhSzCRH.jpeg">
+            <img id="tierraTexture" src="/assets/8081_earthmap10k-DfVUB-Iw.jpg">
+            <img id="lunaTexture" src="/assets/moon_baseColor-CYV67Re8.jpeg">
+            <img id="mercurioTexture" src="/assets/mercury_baseColor-D_b63v2F.jpeg">
+            <img id="venusTexture" src="/assets/venus_baseColor-Woq6JG4L.jpeg">
+            <img id="saturnoTexture" src="/assets/saturn_baseColor-CATlQKv_.jpeg">
+            <img id="saturnRingsTexture" src="/assets/saturn_ring_baseColor-XXXXXX.jpeg">
+            <img id="uranusTexture" src="/assets/uranus_baseColor-Cgt3IUcA.jpeg">
+            <img id="neptuneTexture" src="/assets/neptune_baseColor-DoHLX40_.jpeg">
+            <img id="marsTexture" src="/assets/mars_baseColor-Bz6rcOTP.jpeg">
+            <img id="jupiterTexture" src="/assets/jupiter_baseColor-CmhSzCRH.jpeg">
             <!-- Modelo 3D de Saturno -->
-            <a-asset-item id="saturnModel" src="/Planetario-VR-/scene.gltf"></a-asset-item>
+            <a-asset-item id="saturnModel" src="/assets/scene-XXXXXX.gltf"></a-asset-item>
             <!-- Texturas del modelo Saturno -->
-            <img id="saturnModelDiffuse" src="/Planetario-VR-/assets/Material.002_diffuse-BCMVOkN7.jpeg">
-            <img id="saturnModelRing" src="/Planetario-VR-/assets/ring_diffuse-DHLLaqtJ.jpeg">
+            <img id="saturnModelDiffuse" src="/assets/Material.002_diffuse-BCMVOkN7.jpeg">
+            <img id="saturnModelRing" src="/assets/ring_diffuse-DHLLaqtJ.jpeg">
             <!-- Modelo 3D del OVNI de Bob Lazar -->
-            <a-asset-item id="bobLazarUfo" src="/Planetario-VR-/bob_lazar_ufo.glb"></a-asset-item>
+            <a-asset-item id="bobLazarUfo" src="/assets/bob_lazar_ufo-XXXXXX.glb"></a-asset-item>
             <!-- Modelo 3D del signo de interrogación -->
-            <a-asset-item id="questionMarkModel" src="/Planetario-VR-/high_poly_question_mark.glb"></a-asset-item>
-            <a-asset-item id="sunModel" src="/Planetario-VR-/sun/sun.glb"></a-asset-item>
-            <!-- Eliminar o comentar meteoriteModel si no existe el archivo -->
+            <a-asset-item id="questionMarkModel" src="/assets/high_poly_question_mark-XXXXXX.glb"></a-asset-item>
+            <a-asset-item id="sunModel" src="/assets/sun-XXXXXX.glb"></a-asset-item>
+            <a-asset-item id="meteoriteModel" src="/assets/meteorite-XXXXXX.glb"></a-asset-item>
         </a-assets>
-
-
 
         <!-- Pared trasera -->
         <a-plane 
@@ -610,187 +152,25 @@
             color="#696969">
         </a-plane>
 
-        <!-- Luz ambiental suave para evitar sombras muy duras -->
-        <a-light type="ambient" color="#ffffff" intensity="0.1"></a-light>
+        <!-- Luz ambiental -->
+        <a-light type="ambient" color="#ffffff" intensity="0.6"></a-light>
 
-        <!-- Cámara del usuario (justo al lado izquierdo de la Tierra, apuntando al sol) -->
-        <a-entity position="400 2 4800">
-            <a-camera look-controls="enabled: true" wasd-controls="enabled: true; acceleration: 8000; fly: true" cursor="rayOrigin: mouse"></a-camera>
+        <!-- Luz direccional -->
+        <a-light type="directional" position="0 5 0" color="#ffffff" intensity="0.8" cast-shadow></a-light>
+
+        <!-- Cámara del usuario -->
+        <a-entity position="0 1.6 0">
+            <a-camera 
+                look-controls="pointerLockEnabled: true; enabled: true"
+                wasd-controls="enabled: true"
+                cursor="rayOrigin: mouse">
+            </a-camera>
         </a-entity>
-
-        <!-- SISTEMA SOLAR GIGANTE CON ÓRBITAS REALISTAS -->
-        
-        <!-- Sol (centro) con modelo GLTF -->
-        <a-entity 
-            id="sol-nucleo"
-            position="0 2 0" 
-            scale="66 66 66"
-            gltf-model="#sunModel"
-            animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
-            class="interactivo"
-            sun-glow>
-        </a-entity>
-
-        <!-- Luz del sol (puntual) - BLANCA -->
-        <a-light 
-            id="luz-sol-puntual"
-            type="point" 
-            position="0 2 0"
-            color="#ffffff" 
-            intensity="2" 
-            distance="1000000"
-            decay="0.1">
-        </a-light>
-
-        <!-- Luz ambiental suave -->
-        <a-light 
-            id="luz-ambiental"
-            type="ambient" 
-            color="#ffffff" 
-            intensity="0.05">
-        </a-light>
-
-        <!-- Mercurio -->
-        <a-sphere 
-            id="planeta-mercurio"
-            radius="200"
-            material="src: #mercurioTexture; shader: standard; metalness: 0.6; roughness: 0.9; envMapIntensity: 1.2; emissive: #696969; emissiveIntensity: 0.01"
-            animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
-            planet-info="planet: mercurio"
-            class="interactivo"
-            orbit="radius: 2000; speed: 0.16; startAngle: 0">
-        </a-sphere>
-
-        <!-- Venus -->
-        <a-sphere 
-            id="planeta-venus"
-            radius="250"
-            material="src: #venusTexture; shader: standard; metalness: 0.2; roughness: 0.85; envMapIntensity: 1.1; emissive: #daa520; emissiveIntensity: 0.02"
-            animation="property: rotation; to: 0 360 0; dur: 30000; loop: true; easing: linear"
-            planet-info="planet: venus"
-            class="interactivo"
-            orbit="radius: 3200; speed: 0.12; startAngle: 0.5">
-        </a-sphere>
-
-        <!-- Tierra (con órbita alrededor del Sol) -->
-        <a-sphere 
-            id="planeta-tierra"
-            radius="300"
-            material="src: #tierraTexture; shader: standard; metalness: 0.1; roughness: 0.9; envMapIntensity: 1.3; emissive: #228b22; emissiveIntensity: 0.01"
-            animation="property: rotation; to: 0 360 0; dur: 40000; loop: true; easing: linear"
-            planet-info="planet: tierra"
-            class="interactivo"
-            orbit="radius: 4800; speed: 0.1; startAngle: 1.2">
-
-            <!-- Luna (hija de la Tierra, con órbita propia) -->
-            <a-sphere 
-                id="satelite-luna"
-                radius="80"
-                material="src: #lunaTexture; shader: standard; metalness: 0.1; roughness: 0.95; envMapIntensity: 1.0; emissive: #c0c0c0; emissiveIntensity: 0.005"
-                animation="property: rotation; to: 0 360 0; dur: 120000; loop: true; easing: linear"
-                luna-orbit="radius: 800; speed: 0.3; startAngle: 0"
-                planet-info="planet: luna"
-                class="interactivo">
-            </a-sphere>
-        </a-sphere>
-
-        <!-- Marte -->
-        <a-sphere 
-            id="planeta-marte"
-            radius="220"
-            material="src: #marsTexture; shader: standard; metalness: 0.15; roughness: 0.95; envMapIntensity: 1.4; emissive: #8b4513; emissiveIntensity: 0.02"
-            animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
-            planet-info="planet: marte"
-            class="interactivo"
-            orbit="radius: 6500; speed: 0.08; startAngle: 2.1">
-        </a-sphere>
-
-        <!-- Júpiter -->
-        <a-sphere 
-            id="planeta-jupiter"
-            radius="600"
-            material="src: #jupiterTexture; shader: standard; metalness: 0.3; roughness: 0.9; envMapIntensity: 1.5; emissive: #ffd700; emissiveIntensity: 0.05"
-            animation="property: rotation; to: 0 360 0; dur: 80000; loop: true; easing: linear"
-            planet-info="planet: jupiter"
-            class="interactivo"
-            orbit="radius: 8000; speed: 0.05; startAngle: 2.8">
-        </a-sphere>
-
-
-
-        <!-- Modelo 3D de Saturno (GLTF) -->
-        <a-entity 
-            id="saturno-3d"
-            scale="5 5 5"
-            gltf-model="#saturnModel"
-            saturn-textures
-            animation="property: rotation; to: 0 360 0; dur: 80000; loop: true; easing: linear"
-            planet-info="planet: saturno"
-            class="interactivo"
-            orbit="radius: 9500; speed: 0.03; startAngle: 3.5">
-        </a-entity>
-
-        <!-- OVNI de Bob Lazar -->
-        <a-entity 
-            id="bob-lazar-ufo"
-            position="0 2 3000"
-            scale="100 100 100"
-            gltf-model="#bobLazarUfo"
-            ufo-patrol="speed: 0.15"
-            ufo-textures
-            disable-interaction>
-            <a-light type="point" color="#a21006" intensity="2.97" distance="800" decay="2" castShadow="false" position="0 2 0"></a-light>
-        </a-entity>
-
-        <!-- Meteorito flotante y girando -->
-        <a-entity 
-            id="meteorito-espacial"
-            name="meteorito-espacial"
-            position="4000 1000 0"
-            scale="4 4 4"
-            gltf-model="#meteoriteModel"
-            animation="property: rotation; to: 0 360 360; dur: 18000; loop: true; easing: linear"
-            class="interactivo">
-            <a-light type="point" color="#ffae42" intensity="3.5" distance="1200" decay="2" castShadow="false" position="0 0 0"></a-light>
-        </a-entity>
-
-        <!-- Urano (restaurado a esfera original) -->
-        <a-sphere 
-            id="planeta-urano"
-            radius="350"
-            material="src: #uranusTexture; shader: standard; metalness: 0.2; roughness: 0.8; envMapIntensity: 1.0; emissive: #87ceeb; emissiveIntensity: 0.02"
-            animation="property: rotation; to: 0 360 0; dur: 125000; loop: true; easing: linear"
-            planet-info="planet: urano"
-            class="interactivo"
-            orbit="radius: 12000; speed: 0.02; startAngle: 4.1">
-            <!-- Anillo vertical de Urano con textura y ajustes personalizados -->
-            <a-ring 
-                radius-inner="600" 
-                radius-outer="450" 
-                position="0 0 0"
-                rotation="5.385 175.557706174855 -131.27093340021804"
-                material="src: url(/textures/anillo_uranus.png); color: #808080; transparent: true; opacity: 0.360; side: double;">
-            </a-ring>
-        </a-sphere>
-
-        <!-- Neptuno -->
-        <a-sphere 
-            id="planeta-neptuno"
-            radius="340"
-            material="src: #neptuneTexture; shader: standard; metalness: 0.2; roughness: 0.9; envMapIntensity: 1.1; emissive: #4169e1; emissiveIntensity: 0.03"
-            animation="property: rotation; to: 0 360 0; dur: 150000; loop: true; easing: linear"
-            planet-info="planet: neptuno"
-            class="interactivo"
-            orbit="radius: 14000; speed: 0.01; startAngle: 4.7">
-        </a-sphere>
-
-
 
         <!-- Objetos decorativos en el escenario -->
         
         <!-- Mesa en el centro -->
         <a-box 
-            id="mueble-mesa"
             position="0 0.5 0" 
             width="2" 
             height="1" 
@@ -800,7 +180,6 @@
 
         <!-- Silla -->
         <a-box 
-            id="mueble-silla"
             position="0 0.25 -2" 
             width="0.8" 
             height="0.5" 
@@ -810,7 +189,6 @@
 
         <!-- Lámpara en la mesa -->
         <a-cylinder 
-            id="lampara-base"
             position="0 1.2 0" 
             radius="0.1" 
             height="0.4" 
@@ -819,7 +197,6 @@
 
         <!-- Luz de la lámpara -->
         <a-light 
-            id="luz-lampara"
             type="point" 
             position="0 1.5 0" 
             color="#FFD700" 
@@ -829,7 +206,6 @@
 
         <!-- Ventana en la pared frontal -->
         <a-plane 
-            id="ventana-cristal"
             position="0 2.5 4.9" 
             rotation="0 180 0" 
             width="2" 
@@ -839,7 +215,6 @@
 
         <!-- Marco de la ventana -->
         <a-plane 
-            id="ventana-marco"
             position="0 2.5 4.95" 
             rotation="0 180 0" 
             width="2.2" 
@@ -849,7 +224,6 @@
 
         <!-- Cuadro en la pared -->
         <a-plane 
-            id="cuadro-pintura"
             position="-4.9 2.5 0" 
             rotation="0 90 0" 
             width="1.5" 
@@ -859,7 +233,6 @@
 
         <!-- Marco del cuadro -->
         <a-plane 
-            id="cuadro-marco"
             position="-4.95 2.5 0" 
             rotation="0 90 0" 
             width="1.7" 
@@ -867,232 +240,31 @@
             color="#8B4513">
         </a-plane>
 
-        <!-- Panel informativo HTML flotante -->
-        <div id="planet-info-panel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.92);color:white;z-index:10000;padding:30px 40px;border-radius:15px;max-width:500px;text-align:center;box-shadow:0 0 20px #000a;">
-          <h2 id="planet-info-title" style="margin-bottom:15px;"></h2>
-          <p id="planet-info-text" style="font-size:1.1rem;line-height:1.6;"></p>
-          <button id="close-info-btn" style="margin-top:20px;padding:10px 30px;border-radius:8px;background:#b00;color:white;font-size:1rem;border:none;cursor:pointer;">Cerrar</button>
-        </div>
-        <script>
-        // Diccionario de curiosidades por planeta
-        const planetCuriosities = {
-          sol: { title: "☀️ EL SOL", info: "Nuestra estrella central. Temperatura: 5,500°C en la superficie, 15 millones°C en el núcleo. Curiosidades: En su núcleo se fusionan 600 millones de toneladas de hidrógeno cada segundo. La luz solar tarda 8 minutos en llegar a la Tierra. El Sol contiene el 99.86% de toda la masa del sistema solar. Su gravedad es 28 veces mayor que la de la Tierra. El Sol rota más rápido en su ecuador que en sus polos. Una mancha solar puede ser más grande que la Tierra." },
-          mercurio: { title: "☿ MERCURIO", info: "El planeta más cercano al Sol. Temperatura: -180°C a 430°C. Curiosidades: Un día en Mercurio dura 59 días terrestres, pero un año dura solo 88 días terrestres. No tiene lunas ni anillos. Su superficie está llena de cráteres por impactos de meteoritos. Es el planeta más pequeño del sistema solar. Su núcleo de hierro ocupa el 75% de su volumen. No tiene atmósfera, por lo que no hay viento ni sonido." },
-          venus: { title: "♀ VENUS", info: "El planeta más caliente del sistema solar. Temperatura: 462°C. Curiosidades: Venus gira en dirección contraria a la mayoría de planetas. Su atmósfera es 90 veces más densa que la de la Tierra. Un día en Venus dura más que un año venusiano. Es el planeta más brillante visto desde la Tierra. Tiene más volcanes que cualquier otro planeta. Su superficie está oculta por nubes de ácido sulfúrico." },
-          tierra: { title: "🌍 LA TIERRA", info: "Nuestro hogar. Temperatura promedio: 15°C. Curiosidades: La Tierra es el único planeta conocido con vida. El 71% de su superficie está cubierta de agua. Es el único planeta con placas tectónicas activas. La Luna es el satélite natural más grande en relación a su planeta. El campo magnético terrestre nos protege de la radiación solar. La Tierra no es perfectamente esférica, está achatada en los polos." },
-          marte: { title: "♂ MARTE", info: "El planeta rojo. Temperatura: -140°C a 20°C. Curiosidades: Marte tiene la montaña más alta del sistema solar: el Monte Olimpo, con 22 km de altura. Sus días duran 24 horas y 37 minutos. Tiene el cañón más grande del sistema solar: Valles Marineris. Sus polos tienen casquetes de hielo de dióxido de carbono. La gravedad en Marte es solo el 38% de la terrestre. Tiene dos lunas pequeñas: Fobos y Deimos." },
-          jupiter: { title: "♃ JÚPITER", info: "El planeta más grande. Temperatura: -110°C. Curiosidades: Júpiter tiene 79 lunas conocidas. La Gran Mancha Roja es una tormenta que lleva activa más de 300 años. Es tan masivo que podría tragarse todos los demás planetas. Su día dura solo 10 horas terrestres. Tiene un sistema de anillos muy tenue. Su luna Ganímedes es más grande que Mercurio. Júpiter emite más calor del que recibe del Sol." },
-          saturno: { title: "♄ SATURNO", info: "El planeta de los anillos. Temperatura: -140°C. Curiosidades: Los anillos de Saturno están compuestos principalmente de hielo y roca. Tienen solo 10 metros de grosor pero 280,000 km de diámetro. Es el planeta menos denso del sistema solar. Tiene 82 lunas confirmadas. Su luna Titán es la segunda más grande del sistema solar. Los anillos de Saturno tienen 'pastores' que mantienen su forma. Es el único planeta visible a simple vista que no era conocido en la antigüedad." },
-          urano: { title: "♅ URANO", info: "El planeta inclinado. Temperatura: -195°C. Curiosidades: Urano gira de lado, con su eje inclinado 98 grados. Sus anillos son verticales en lugar de horizontales. Fue el primer planeta descubierto con telescopio. Tiene 27 lunas conocidas. Su color azul se debe al metano en su atmósfera. Un año en Urano dura 84 años terrestres. Sus anillos son muy oscuros y difíciles de ver." },
-          neptuno: { title: "♆ NEPTUNO", info: "El planeta más lejano. Temperatura: -200°C. Curiosidades: Neptuno tiene los vientos más fuertes del sistema solar, alcanzando 2,100 km/h. Fue descubierto matemáticamente antes de ser observado. Tiene 14 lunas conocidas. Su luna Tritón orbita en dirección contraria. Un año en Neptuno dura 165 años terrestres. Es el planeta más frío del sistema solar. Su color azul intenso se debe al metano en su atmósfera." },
-          luna: { title: "🌙 LA LUNA", info: "La Luna es el único satélite natural de la Tierra. Su gravedad causa las mareas. Siempre muestra la misma cara hacia la Tierra. Su superficie está cubierta de cráteres. No tiene atmósfera significativa. Es el quinto satélite más grande del sistema solar." }
-        };
-        // Asignar eventos de clic a todos los planetas y Saturno 3D
-        window.addEventListener('DOMContentLoaded', function() {
-          // Solo planetas (sin el Sol) deben ser interactivos
-          const planetIds = [
-            'planeta-mercurio',
-            'planeta-venus',
-            'planeta-tierra',
-            'satelite-luna',
-            'planeta-marte',
-            'planeta-jupiter',
-            'saturno-3d',
-            'planeta-urano',
-            'planeta-neptuno'
-          ];
-          planetIds.forEach(function(id) {
-            const el = document.getElementById(id);
-            if (el) {
-              el.addEventListener('click', function() {
-                let planet = el.getAttribute('planet-info')?.planet || el.getAttribute('planet-info') || id.replace('planeta-','').replace('saturno-3d','saturno').replace('satelite-luna','luna');
-                const data = planetCuriosities[planet];
-                if (data) {
-                  document.getElementById('planet-info-title').textContent = data.title;
-                  document.getElementById('planet-info-text').innerHTML = data.info;
-                  document.getElementById('planet-info-panel').style.display = 'block';
+        <!-- Componente para crear estrellas lejanas (OPTIMIZADO) -->
+        AFRAME.registerComponent('starfield', {
+            init: function() {
+                const scene = this.el;
+                // Aumentar de 1000 a 3000 estrellas para más densidad
+                for (let i = 0; i < 3000; i++) {
+                    const star = document.createElement('a-sphere');
+                    // Posición aleatoria en una esfera muy lejana y dispersa
+                    const radius = 8000 + Math.random() * 8000;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos(Math.random() * 2 - 1);
+                    const x = radius * Math.sin(phi) * Math.cos(theta);
+                    const y = radius * Math.sin(phi) * Math.sin(theta);
+                    const z = radius * Math.cos(phi);
+                    star.setAttribute('position', `${x} ${y} ${z}`);
+                    star.setAttribute('radius', '5'); // Reducir tamaño
+                    // Material más simple
+                    star.setAttribute('material', `shader: flat; color: #ffffff; emissive: #ffffff; emissiveIntensity: 8`);
+                    scene.appendChild(star);
                 }
-              });
             }
-          });
-          // Agregar también el Sol como interactivo SOLO si el raycaster realmente intersecta el modelo
-          const sol = document.getElementById('sol-nucleo');
-          const scene = document.querySelector('a-scene');
-          if (sol && scene) {
-            scene.addEventListener('click', function(e) {
-              // Obtener el cursor de la cámara
-              const camera = scene.querySelector('a-camera');
-              if (camera && camera.components && camera.components.cursor) {
-                const intersected = camera.components.cursor.intersectedEl;
-                if (intersected === sol) {
-                  const data = planetCuriosities['sol'];
-                  if (data) {
-                    document.getElementById('planet-info-title').textContent = data.title;
-                    document.getElementById('planet-info-text').innerHTML = data.info;
-                    document.getElementById('planet-info-panel').style.display = 'block';
-                  }
-                }
-              }
-            });
-          }
-          // Asignar el evento de cerrar solo una vez y evitar propagación
-          document.getElementById('close-info-btn').onclick = function(event) {
-            event.stopPropagation();
-            document.getElementById('planet-info-panel').style.display = 'none';
-          };
         });
-        // Evento informativo al hacer click en el OVNI
-        window.addEventListener('DOMContentLoaded', function() {
-          var ufo = document.getElementById('bob-lazar-ufo');
-          if (ufo) {
-            ufo.addEventListener('click', function(event) {
-              event.stopPropagation();
-              // Si ya existe el panel, no crear otro
-              if (document.getElementById('ufo-info-panel')) {
-                document.getElementById('ufo-info-panel').style.display = 'block';
-                return;
-              }
-              // Crear panel informativo similar al de los planetas
-              var panel = document.createElement('div');
-              panel.id = 'ufo-info-panel';
-              panel.style.cssText = 'display:block;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.92);color:white;z-index:10000;padding:30px 40px;border-radius:15px;max-width:500px;text-align:center;box-shadow:0 0 20px #000a;';
-              panel.innerHTML = `
-                <h2 style="margin-bottom:15px;">👽 MENSAJE DEL OVNI</h2>
-                <p style="font-size:1.1rem;line-height:1.6;">Espero que nuestro amigo Jorge Bastori cumpla con su infiltración como terricola... Mientras tanto seguiremos consumiendo los recursos de este sistema solar a escondidas.. Muahahaha.
-                  https://github.com/jortecs </p> 
-                <button id="close-ufo-info-btn" style="margin-top:20px;padding:10px 30px;border-radius:8px;background:#b00;color:white;font-size:1rem;border:none;cursor:pointer;">Cerrar</button>
-              `;
-              document.body.appendChild(panel);
-              document.getElementById('close-ufo-info-btn').onclick = function(event) {
-                event.stopPropagation();
-                panel.style.display = 'none';
-              };
-            });
-          }
-        });
-        </script>
+
+        <a-entity starfield></a-entity>
 
     </a-scene>
-
-    <script>
-// --- Pointer Lock helpers ---
-function exitPointerLock() {
-  if (document.exitPointerLock) {
-    document.exitPointerLock();
-  } else if (document.mozExitPointerLock) {
-    document.mozExitPointerLock();
-  } else if (document.webkitExitPointerLock) {
-    document.webkitExitPointerLock();
-  }
-}
-function requestPointerLock() {
-  var scene = document.querySelector('a-scene').canvas;
-  if (scene && scene.requestPointerLock) {
-    scene.requestPointerLock();
-  } else if (scene && scene.mozRequestPointerLock) {
-    scene.mozRequestPointerLock();
-  } else if (scene && scene.webkitRequestPointerLock) {
-    scene.webkitRequestPointerLock();
-  }
-}
-
-// --- Pantalla de pausa ---
-// Eliminar el div con id="pantalla-pausa" y toda la lógica JS asociada a la pausa (mostrarPausa, ocultarPausa, btnContinuar, etc).
-
-// Atajos de teclado para pausar/continuar
-window.addEventListener('keydown', function(e) {
-  // Eliminar la lógica de pausa de teclado
-});
-// Si el usuario sale del pointer lock manualmente, mostrar pausa
-if ("onpointerlockchange" in document) {
-  document.addEventListener('pointerlockchange', function() {
-    var scene = document.querySelector('a-scene').canvas;
-    // Eliminar la lógica de pausa de pointer lock
-  });
-}
-
-// Detectar móvil/táctil
-function isMobile() {
-  return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop|Mobile|Tablet/i.test(navigator.userAgent) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
-}
-
-if (isMobile()) {
-  document.getElementById('mobile-controls').style.display = 'block';
-  // Joystick izquierdo: rotación de cámara
-  var joystickLeft = nipplejs.create({
-    zone: document.getElementById('joystick-left'),
-    mode: 'static',
-    position: {left: '60px', bottom: '60px'},
-    color: 'white',
-    size: 100,
-    restOpacity: 0.5
-  });
-  // Joystick derecho: movimiento
-  var joystickRight = nipplejs.create({
-    zone: document.getElementById('joystick-right'),
-    mode: 'static',
-    position: {right: '60px', bottom: '60px'},
-    color: 'white',
-    size: 100,
-    restOpacity: 0.5
-  });
-  // Referencias a la cámara y entidad de usuario
-  var cameraEl = document.querySelector('a-camera');
-  var entityEl = cameraEl.parentEl;
-  // Variables para movimiento
-  var move = {x:0, y:0};
-  var rotate = {x:0, y:0};
-  // Movimiento con joystick derecho
-  joystickRight.on('move', function(evt, data) {
-    var rad = data.angle.radian;
-    var force = Math.min(data.force, 1);
-    move.x = Math.cos(rad) * force;
-    move.y = Math.sin(rad) * force;
-  });
-  joystickRight.on('end', function() { move.x = 0; move.y = 0; });
-  // Rotación con joystick izquierdo
-  joystickLeft.on('move', function(evt, data) {
-    var rad = data.angle.radian;
-    var force = Math.min(data.force, 1);
-    rotate.x = Math.cos(rad) * force;
-    rotate.y = Math.sin(rad) * force;
-  });
-  joystickLeft.on('end', function() { rotate.x = 0; rotate.y = 0; });
-  // Acción: click/interactuar
-  document.getElementById('mobile-action').addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    // Simular click en el objeto bajo el centro de la pantalla
-    var scene = document.querySelector('a-scene');
-    var cursor = cameraEl.components.cursor;
-    if (cursor && cursor.intersectedEl) {
-      cursor.intersectedEl.emit('click');
-    }
-  });
-  // Loop para aplicar movimiento y rotación
-  AFRAME.registerComponent('mobile-controls', {
-    tick: function() {
-      // Movimiento (traslación)
-      if (move.x !== 0 || move.y !== 0) {
-        var angle = cameraEl.getAttribute('rotation').y * Math.PI / 180;
-        var dx = move.y * Math.sin(angle) + move.x * Math.cos(angle);
-        var dz = move.y * Math.cos(angle) - move.x * Math.sin(angle);
-        var pos = entityEl.getAttribute('position');
-        pos.x += dx * 2;
-        pos.z += dz * 2;
-        entityEl.setAttribute('position', pos);
-      }
-      // Rotación (cámara)
-      if (rotate.x !== 0 || rotate.y !== 0) {
-        var rot = cameraEl.getAttribute('rotation');
-        rot.y -= rotate.x * 2.5;
-        rot.x -= rotate.y * 2.5;
-        rot.x = Math.max(-90, Math.min(90, rot.x));
-        cameraEl.setAttribute('rotation', rot);
-      }
-    }
-  });
-  cameraEl.setAttribute('mobile-controls', '');
-}
-</script>
 </body>
 </html> 
