@@ -620,15 +620,16 @@
 
         <!-- SISTEMA SOLAR GIGANTE CON ÓRBITAS REALISTAS -->
         
-        <!-- Sol (centro) con textura -->
-        <a-sphere 
+        <!-- Sol (centro) con modelo GLTF -->
+        <a-entity 
             id="sol-nucleo"
             position="0 2 0" 
-            radius="500"
-            material="src: #sunTexture; shader: standard; emissive: #ff6600; emissiveIntensity: 0.3; metalness: 0.1; roughness: 0.8"
+            scale="66 66 66"
+            gltf-model="#sunModel"
             animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
-            class="interactivo">
-        </a-sphere>
+            class="interactivo"
+            sun-glow>
+        </a-entity>
 
         <!-- Luz del sol (puntual) - BLANCA -->
         <a-light 
