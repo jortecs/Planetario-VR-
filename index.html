@@ -547,6 +547,7 @@
             <!-- Modelo 3D del signo de interrogación -->
             <a-asset-item id="questionMarkModel" src="./src/high_poly_question_mark.glb"></a-asset-item>
             <a-asset-item id="sunModel" src="./src/sun/sun.glb"></a-asset-item>
+            <a-asset-item id="meteoriteModel" src="./src/meteorite.glb"></a-asset-item>
         </a-assets>
 
 
@@ -739,6 +740,18 @@
             ufo-textures
             disable-interaction>
             <a-light type="point" color="#a21006" intensity="2.97" distance="800" decay="2" castShadow="false" position="0 2 0"></a-light>
+        </a-entity>
+
+        <!-- Meteorito flotante y girando -->
+        <a-entity 
+            id="meteorito-espacial"
+            name="meteorito-espacial"
+            position="4000 1000 0"
+            scale="4 4 4"
+            gltf-model="#meteoriteModel"
+            animation="property: rotation; to: 0 360 360; dur: 18000; loop: true; easing: linear"
+            class="interactivo">
+            <a-light type="point" color="#ffae42" intensity="3.5" distance="1200" decay="2" castShadow="false" position="0 0 0"></a-light>
         </a-entity>
 
         <!-- Urano (restaurado a esfera original) -->
