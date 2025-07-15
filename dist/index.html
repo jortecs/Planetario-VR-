@@ -10,11 +10,7 @@
         AFRAME.registerComponent('orbit', {
             schema: {
                 radius: {type: 'number', default: 25},
-<<<<<<< HEAD
-                speed: {type: 'number', default: 1},
-=======
                 speed: {type: 'number', default: 0.2}, // Reducido para traslación más lenta
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
                 startAngle: {type: 'number', default: 0}
             },
             init: function() {
@@ -56,11 +52,7 @@
         AFRAME.registerComponent('luna-orbit', {
             schema: {
                 radius: {type: 'number', default: 800},
-<<<<<<< HEAD
-                speed: {type: 'number', default: 0.3},
-=======
                 speed: {type: 'number', default: 0.06}, // Reducido para traslación más lenta
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
                 startAngle: {type: 'number', default: 0}
             },
             init: function() {
@@ -100,7 +92,7 @@
                                     // Aplicar textura de Saturno al planeta (primer material)
                                     if (material.name === 'Material.002' || child.name.includes('Material.002')) {
                                         console.log('Aplicando textura de planeta a:', child.name);
-                                        textureLoader.load('./src/saturn (1)/textures/Material.002_diffuse.jpeg', (texture) => {
+                                        textureLoader.load('assets/saturn/textures/Material.002_diffuse.jpeg', (texture) => {
                                             material.map = texture;
                                             material.needsUpdate = true;
                                             console.log('Textura de planeta aplicada');
@@ -109,7 +101,7 @@
                                     // Aplicar textura de anillos (segundo material)
                                     else if (material.name.includes('ring') || child.name.includes('ring') || child.name.includes('rings')) {
                                         console.log('Aplicando textura de anillos a:', child.name);
-                                        textureLoader.load('./src/saturn (1)/textures/ring_diffuse.jpeg', (texture) => {
+                                        textureLoader.load('assets/saturn/textures/ring_diffuse.jpeg', (texture) => {
                                             material.map = texture;
                                             material.needsUpdate = true;
                                             console.log('Textura de anillos aplicada');
@@ -118,7 +110,7 @@
                                     // Si no coincide con ninguno, aplicar textura de planeta por defecto
                                     else {
                                         console.log('Aplicando textura de planeta por defecto a:', child.name);
-                                        textureLoader.load('./src/saturn (1)/textures/Material.002_diffuse.jpeg', (texture) => {
+                                        textureLoader.load('assets/saturn/textures/Material.002_diffuse.jpeg', (texture) => {
                                             material.map = texture;
                                             material.needsUpdate = true;
                                             console.log('Textura de planeta aplicada por defecto');
@@ -135,11 +127,7 @@
         // Componente para movimiento del OVNI entre planetas (OPTIMIZADO)
         AFRAME.registerComponent('ufo-patrol', {
             schema: {
-<<<<<<< HEAD
-                speed: {type: 'number', default: 0.08} // Velocidad moderada
-=======
                 speed: {type: 'number', default: 0.02} // Velocidad más lenta
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
             },
             init: function() {
                 this.time = 0;
@@ -508,12 +496,8 @@
         });
 
 
-    </script>
-<<<<<<< HEAD
-  <link rel="stylesheet" crossorigin href="/assets/index-ChRiL3_s.css">
-=======
+    </script>
   <link rel="stylesheet" crossorigin href="/Planetario-VR-/assets/index-ChRiL3_s.css">
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
 </head>
 <body>
     <!-- Eliminar el crosshair -->
@@ -539,58 +523,31 @@
             <!-- Texturas para las paredes -->
             <img id="wallTexture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==">
             <!-- Textura del Sol -->
-<<<<<<< HEAD
-            <img id="sunTexture" src="/assets/8k_sun-Cutma8LX.jpg">
+            <img id="sunTexture" src="assets/8k_sun-Cutma8LX.jpg">
             <!-- Textura del fondo estrellado -->
-            <img id="starsTexture" src="./src/textures/8k_stars_milky_way.jpg">
+            <img id="starsTexture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==">
             <!-- Texturas de planetas -->
-            <img id="tierraTexture" src="/assets/8081_earthmap10k-DfVUB-Iw.jpg">
-            <img id="lunaTexture" src="/assets/moon_baseColor-CYV67Re8.jpeg">
-            <img id="mercurioTexture" src="/assets/mercury_baseColor-D_b63v2F.jpeg">
-            <img id="venusTexture" src="/assets/venus_baseColor-Woq6JG4L.jpeg">
-            <img id="saturnoTexture" src="/assets/saturn_baseColor-CATlQKv_.jpeg">
-            <img id="saturnRingsTexture" src="./src/textures/saturn_ring_baseColor.jpeg">
-            <img id="uranusTexture" src="/assets/uranus_baseColor-Cgt3IUcA.jpeg">
-            <img id="neptuneTexture" src="/assets/neptune_baseColor-DoHLX40_.jpeg">
-            <img id="marsTexture" src="/assets/mars_baseColor-Bz6rcOTP.jpeg">
-            <img id="jupiterTexture" src="/assets/jupiter_baseColor-CmhSzCRH.jpeg">
+            <img id="tierraTexture" src="assets/textures/8081_earthmap10k.jpg">
+            <img id="lunaTexture" src="assets/textures/moon_baseColor.jpeg">
+            <img id="mercurioTexture" src="assets/textures/mercury_baseColor.jpeg">
+            <img id="venusTexture" src="assets/textures/venus_baseColor.jpeg">
+            <img id="saturnoTexture" src="assets/textures/saturn_baseColor.jpeg">
+            <img id="saturnRingsTexture" src="assets/textures/saturn_ring_baseColor.png">
+            <img id="uranusTexture" src="assets/textures/uranus_baseColor.jpeg">
+            <img id="neptuneTexture" src="assets/textures/neptune_baseColor.jpeg">
+            <img id="marsTexture" src="assets/textures/mars_baseColor.jpeg">
+            <img id="jupiterTexture" src="assets/textures/jupiter_baseColor.jpeg">
             <!-- Modelo 3D de Saturno -->
-            <a-asset-item id="saturnModel" src="./src/saturn (1)/scene.gltf"></a-asset-item>
+            <a-asset-item id="saturnModel" src="assets/saturn/scene.gltf"></a-asset-item>
             <!-- Texturas del modelo Saturno -->
-            <img id="saturnModelDiffuse" src="/assets/Material.002_diffuse-BCMVOkN7.jpeg">
-            <img id="saturnModelRing" src="/assets/ring_diffuse-DHLLaqtJ.jpeg">
+            <img id="saturnModelDiffuse" src="assets/saturn/textures/Material.002_diffuse.jpeg">
+            <img id="saturnModelRing" src="assets/saturn/textures/ring_diffuse.jpeg">
             <!-- Modelo 3D del OVNI de Bob Lazar -->
-            <a-asset-item id="bobLazarUfo" src="./src/bob_lazar_ufo.glb"></a-asset-item>
+            <a-asset-item id="bobLazarUfo" src="assets/bob_lazar_ufo.glb"></a-asset-item>
             <!-- Modelo 3D del signo de interrogación -->
-            <a-asset-item id="questionMarkModel" src="./src/high_poly_question_mark.glb"></a-asset-item>
-            <a-asset-item id="sunModel" src="./src/sun/sun.glb"></a-asset-item>
-            <a-asset-item id="meteoriteModel" src="./src/meteorite.glb"></a-asset-item>
-=======
-            <img id="sunTexture" src="./8k_sun.jpg">
-            <!-- Textura del fondo estrellado -->
-            <img id="starsTexture" src="./src/textures/8k_stars_milky_way.jpg">
-            <!-- Texturas de planetas -->
-            <img id="tierraTexture" src="/Planetario-VR-/assets/8081_earthmap10k-DfVUB-Iw.jpg">
-            <img id="lunaTexture" src="/Planetario-VR-/assets/moon_baseColor-CYV67Re8.jpeg">
-            <img id="mercurioTexture" src="/Planetario-VR-/assets/mercury_baseColor-D_b63v2F.jpeg">
-            <img id="venusTexture" src="/Planetario-VR-/assets/venus_baseColor-Woq6JG4L.jpeg">
-            <img id="saturnoTexture" src="/Planetario-VR-/assets/saturn_baseColor-CATlQKv_.jpeg">
-            <img id="saturnRingsTexture" src="./src/textures/saturn_ring_baseColor.jpeg">
-            <img id="uranusTexture" src="/Planetario-VR-/assets/uranus_baseColor-Cgt3IUcA.jpeg">
-            <img id="neptuneTexture" src="/Planetario-VR-/assets/neptune_baseColor-DoHLX40_.jpeg">
-            <img id="marsTexture" src="/Planetario-VR-/assets/mars_baseColor-Bz6rcOTP.jpeg">
-            <img id="jupiterTexture" src="/Planetario-VR-/assets/jupiter_baseColor-CmhSzCRH.jpeg">
-            <!-- Modelo 3D de Saturno -->
-            <a-asset-item id="saturnModel" src="./src/saturn (1)/scene.gltf"></a-asset-item>
-            <!-- Texturas del modelo Saturno -->
-            <img id="saturnModelDiffuse" src="/Planetario-VR-/assets/Material.002_diffuse-BCMVOkN7.jpeg">
-            <img id="saturnModelRing" src="/Planetario-VR-/assets/ring_diffuse-DHLLaqtJ.jpeg">
-            <!-- Modelo 3D del OVNI de Bob Lazar -->
-            <a-asset-item id="bobLazarUfo" src="public/assets/bob_lazar_ufo.glb"></a-asset-item>
-            <!-- Modelo 3D del signo de interrogación -->
-            <a-asset-item id="questionMarkModel" src="./src/high_poly_question_mark.glb"></a-asset-item>
-            <a-asset-item id="sunModel" src="./src/sun/sun.glb"></a-asset-item>
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
+            <a-asset-item id="questionMarkModel" src="assets/bob_lazar_ufo.glb"></a-asset-item>
+            <a-asset-item id="sunModel" src="assets/sun/sun.glb"></a-asset-item>
+            <a-asset-item id="meteoriteModel" src="assets/bob_lazar_ufo.glb"></a-asset-item>
         </a-assets>
 
 
@@ -679,11 +636,7 @@
             id="luz-sol-puntual"
             type="point" 
             position="0 2 0"
-<<<<<<< HEAD
-            color="#ffffff" 
-=======
             color="#ffe0cc" 
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
             intensity="2" 
             distance="1000000"
             decay="0.1">
@@ -705,11 +658,7 @@
             animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
             planet-info="planet: mercurio"
             class="interactivo"
-<<<<<<< HEAD
-            orbit="radius: 2000; speed: 0.16; startAngle: 0">
-=======
             orbit="radius: 2000; speed: 0.03; startAngle: 0">
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
         <!-- Venus -->
@@ -720,11 +669,7 @@
             animation="property: rotation; to: 0 360 0; dur: 30000; loop: true; easing: linear"
             planet-info="planet: venus"
             class="interactivo"
-<<<<<<< HEAD
-            orbit="radius: 3200; speed: 0.12; startAngle: 0.5">
-=======
             orbit="radius: 3200; speed: 0.025; startAngle: 0.5">
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
         <!-- Tierra (con órbita alrededor del Sol) -->
@@ -735,11 +680,7 @@
             animation="property: rotation; to: 0 360 0; dur: 40000; loop: true; easing: linear"
             planet-info="planet: tierra"
             class="interactivo"
-<<<<<<< HEAD
-            orbit="radius: 4800; speed: 0.1; startAngle: 1.2">
-=======
             orbit="radius: 4800; speed: 0.02; startAngle: 1.2">
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
 
             <!-- Luna (hija de la Tierra, con órbita propia) -->
             <a-sphere 
@@ -747,11 +688,7 @@
                 radius="80"
                 material="src: #lunaTexture; shader: standard; metalness: 0.1; roughness: 0.95; envMapIntensity: 1.0; emissive: #c0c0c0; emissiveIntensity: 0.005"
                 animation="property: rotation; to: 0 360 0; dur: 120000; loop: true; easing: linear"
-<<<<<<< HEAD
-                luna-orbit="radius: 800; speed: 0.3; startAngle: 0"
-=======
-                luna-orbit="radius: 800; speed: 0.04; startAngle: 0"
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
+                luna-orbit="radius: 800; speed: 0.06; startAngle: 0"
                 planet-info="planet: luna"
                 class="interactivo">
             </a-sphere>
@@ -765,11 +702,7 @@
             animation="property: rotation; to: 0 360 0; dur: 60000; loop: true; easing: linear"
             planet-info="planet: marte"
             class="interactivo"
-<<<<<<< HEAD
-            orbit="radius: 6500; speed: 0.08; startAngle: 2.1">
-=======
             orbit="radius: 6500; speed: 0.016; startAngle: 2.1">
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
         <!-- Júpiter -->
@@ -780,11 +713,7 @@
             animation="property: rotation; to: 0 360 0; dur: 80000; loop: true; easing: linear"
             planet-info="planet: jupiter"
             class="interactivo"
-<<<<<<< HEAD
-            orbit="radius: 8000; speed: 0.05; startAngle: 2.8">
-=======
             orbit="radius: 8000; speed: 0.01; startAngle: 2.8">
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
 
@@ -798,25 +727,23 @@
             animation="property: rotation; to: 0 360 0; dur: 80000; loop: true; easing: linear"
             planet-info="planet: saturno"
             class="interactivo"
-<<<<<<< HEAD
-            orbit="radius: 9500; speed: 0.03; startAngle: 3.5">
-=======
             orbit="radius: 9500; speed: 0.006; startAngle: 3.5">
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-entity>
 
         <!-- OVNI de Bob Lazar -->
         <a-entity 
             id="bob-lazar-ufo"
-<<<<<<< HEAD
-            position="0 2 3000"
-            scale="100 100 100"
+            position="0 10 0"
+            scale="18 18 18"
             gltf-model="#bobLazarUfo"
-            ufo-patrol="speed: 0.15"
+            ufo-patrol="speed: 0.05"
             ufo-textures
             disable-interaction>
-            <a-light type="point" color="#a21006" intensity="2.97" distance="800" decay="2" castShadow="false" position="0 2 0"></a-light>
+            <!-- Luz blanca para iluminar el OVNI sin teñirlo de rojo -->
+            <a-light type="point" color="#ffffff" intensity="10" distance="500" decay="2" position="0 18 0"></a-light>
         </a-entity>
+        <!-- Luz puntual para iluminar el OVNI -->
+        <a-light type="point" color="#a21006" intensity="5" distance="2000" decay="2" position="0 20 0"></a-light>
 
         <!-- Meteorito flotante y girando -->
         <a-entity 
@@ -829,19 +756,6 @@
             class="interactivo">
             <a-light type="point" color="#ffae42" intensity="3.5" distance="1200" decay="2" castShadow="false" position="0 0 0"></a-light>
         </a-entity>
-=======
-            position="0 10 0"
-            scale="18 18 18"
-            gltf-model="#bobLazarUfo"
-            ufo-patrol="speed: 0.05"
-            ufo-textures
-            disable-interaction>
-            <!-- Luz blanca para iluminar el OVNI sin teñirlo de rojo -->
-            <a-light type="point" color="#ffffff" intensity="10" distance="500" decay="2" position="0 18 0"></a-light>
-        </a-entity>
-        <!-- Luz puntual para iluminar el OVNI -->
-        <a-light type="point" color="#a21006" intensity="5" distance="2000" decay="2" position="0 20 0"></a-light>
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
 
         <!-- Urano (restaurado a esfera original) -->
         <a-sphere 
@@ -851,11 +765,7 @@
             animation="property: rotation; to: 0 360 0; dur: 125000; loop: true; easing: linear"
             planet-info="planet: urano"
             class="interactivo"
-<<<<<<< HEAD
-            orbit="radius: 12000; speed: 0.02; startAngle: 4.1">
-=======
             orbit="radius: 12000; speed: 0.004; startAngle: 4.1">
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
             <!-- Anillo vertical de Urano con textura y ajustes personalizados -->
             <a-ring 
                 radius-inner="600" 
@@ -874,11 +784,7 @@
             animation="property: rotation; to: 0 360 0; dur: 150000; loop: true; easing: linear"
             planet-info="planet: neptuno"
             class="interactivo"
-<<<<<<< HEAD
-            orbit="radius: 14000; speed: 0.01; startAngle: 4.7">
-=======
             orbit="radius: 14000; speed: 0.002; startAngle: 4.7">
->>>>>>> 25d8136 (Limpieza final de referencias a submódulos rotos para GitHub Pages)
         </a-sphere>
 
 
