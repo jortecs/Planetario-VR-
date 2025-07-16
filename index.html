@@ -497,7 +497,7 @@
 
 
     </script>
-  <link rel="stylesheet" crossorigin href="/Planetario-VR-/assets/index-Dxga3AMg.css">
+  <link rel="stylesheet" crossorigin href="/Planetario-VR-/assets/index-CfwcwYAh.css">
 </head>
 <body>
     <!-- Eliminar el crosshair -->
@@ -1044,9 +1044,7 @@ if (isMobile()) {
     size: 100,
     restOpacity: 0.5
   });
-  // Referencias a la cámara y entidad de usuario
   var entityEl = cameraEl.parentEl;
-  // Variables para movimiento
   var move = {x:0, y:0};
   var rotate = {x:0, y:0};
   // Movimiento con joystick derecho
@@ -1065,6 +1063,26 @@ if (isMobile()) {
     rotate.y = Math.sin(rad) * force;
   });
   joystickLeft.on('end', function() { rotate.x = 0; rotate.y = 0; });
+
+  // --- Tap-and-hold para avanzar ---
+  var tapMoveActive = false;
+  function startTapMove(e) {
+    // Evitar si el tap es sobre un panel, botón o joystick
+    if (e.target.closest('#planet-info-panel, #ufo-info-panel, button, #joystick-left, #joystick-right')) return;
+    tapMoveActive = true;
+    move.x = 0;
+    move.y = 1; // Avanzar hacia adelante
+  }
+  function stopTapMove(e) {
+    tapMoveActive = false;
+    move.x = 0;
+    move.y = 0;
+  }
+  document.body.addEventListener('touchstart', startTapMove);
+  document.body.addEventListener('touchend', stopTapMove);
+  document.body.addEventListener('touchcancel', stopTapMove);
+  // --- Fin tap-and-hold ---
+
   // Acción: click/interactuar
   document.getElementById('mobile-action').addEventListener('touchstart', function(e) {
     e.preventDefault();
