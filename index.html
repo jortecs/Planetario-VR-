@@ -580,7 +580,7 @@
         </a-plane>
 
         <!-- Luz ambiental suave para evitar sombras muy duras -->
-        <a-light type="ambient" color="#ffffff" intensity="0.1"></a-light>
+        <a-light type="ambient" color="#ffffff" intensity="0.3"></a-light>
 
         <!-- Cámara del usuario (justo al lado izquierdo de la Tierra, apuntando al sol) -->
         <a-entity position="400 2 4800">
@@ -606,7 +606,7 @@
             type="point" 
             position="0 2 0"
             color="#ffe0cc" 
-            intensity="2" 
+            intensity="3" 
             distance="1000000"
             decay="0.1">
         </a-light>
@@ -988,7 +988,7 @@ function isMobile() {
 }
 
 if (isMobile()) {
-  document.getElementById('mobile-controls').style.display = 'block';
+  document.getElementById('move-forward-btn').style.display = 'flex';
   // Habilitar look-controls táctil en móvil
   var cameraEl = document.querySelector('a-camera');
   if (cameraEl && cameraEl.components && cameraEl.components["look-controls"]) {
@@ -1086,6 +1086,25 @@ if (isMobile()) {
     }
   });
   cameraEl.setAttribute('mobile-controls', '');
+
+  // --- Botón de avanzar ---
+  var moveBtn = document.getElementById('move-forward-btn');
+  moveBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    move.x = 0;
+    move.y = 1;
+  });
+  moveBtn.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    move.x = 0;
+    move.y = 0;
+  });
+  moveBtn.addEventListener('touchcancel', function(e) {
+    e.preventDefault();
+    move.x = 0;
+    move.y = 0;
+  });
+  // --- Fin botón de avanzar ---
 }
 </script>
 </body>
