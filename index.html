@@ -357,35 +357,6 @@
             }
         });
 
-        // Componente para aplicar color amarillo y luz al modelo de signo de interrogación
-        AFRAME.registerComponent('question-mark-glow', {
-            init: function() {
-                this.el.addEventListener('model-loaded', () => {
-                    const model = this.el.getObject3D('mesh');
-                    if (model) {
-                        console.log('Modelo de signo de interrogación cargado, aplicando color amarillo...');
-                        model.traverse((child) => {
-                            if (child.isMesh) {
-                                console.log('Aplicando material amarillo a:', child.name);
-                                const material = child.material;
-                                if (material) {
-                                    // Aplicar color amarillo brillante
-                                    material.color.setHex(0xFFFF00); // Amarillo
-                                    material.emissive.setHex(0xFFFF00); // Emisión amarilla
-                                    material.emissiveIntensity = 0.5; // Intensidad de emisión
-                                    material.metalness = 0.8;
-                                    material.roughness = 0.2;
-                                    material.needsUpdate = true;
-                                    
-                                    console.log('Material amarillo aplicado');
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
-
         // Componente para asegurar que los botones sean clickeables
         AFRAME.registerComponent('clickable-button', {
             init: function() {
@@ -544,8 +515,6 @@
             <img id="saturnModelRing" src="assets/saturn/textures/ring_diffuse.jpeg">
             <!-- Modelo 3D del OVNI de Bob Lazar -->
             <a-asset-item id="bobLazarUfo" src="assets/bob_lazar_ufo.glb"></a-asset-item>
-            <!-- Modelo 3D del signo de interrogación -->
-            <a-asset-item id="questionMarkModel" src="assets/bob_lazar_ufo.glb"></a-asset-item>
             <a-asset-item id="sunModel" src="assets/sun.glb"></a-asset-item>
             <a-asset-item id="meteoriteModel" src="assets/bob_lazar_ufo.glb"></a-asset-item>
         </a-assets>
@@ -1102,8 +1071,8 @@ if (isMobile()) {
         var dx = move.y * Math.sin(angle) + move.x * Math.cos(angle);
         var dz = move.y * Math.cos(angle) - move.x * Math.sin(angle);
         var pos = entityEl.getAttribute('position');
-        pos.x += dx * 2;
-        pos.z += dz * 2;
+        pos.x += dx * 8; // Aumentar velocidad de 2 a 8
+        pos.z += dz * 8;
         entityEl.setAttribute('position', pos);
       }
       // Rotación (cámara)
