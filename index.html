@@ -496,8 +496,8 @@
         });
 
 
-    </script>
-  <link rel="stylesheet" crossorigin href="/Planetario-VR-/assets/index-ChRiL3_s.css">
+    </script>
+  <link rel="stylesheet" crossorigin href="/Planetario-VR-/assets/index-Dxga3AMg.css">
 </head>
 <body>
     <!-- Eliminar el crosshair -->
@@ -615,7 +615,7 @@
 
         <!-- Cámara del usuario (justo al lado izquierdo de la Tierra, apuntando al sol) -->
         <a-entity position="400 2 4800">
-            <a-camera look-controls="enabled: true" wasd-controls="enabled: true; acceleration: 8000; fly: true" cursor="rayOrigin: mouse"></a-camera>
+            <a-camera look-controls="enabled: true; touchEnabled: true; pointerLockEnabled: false" wasd-controls="enabled: true; acceleration: 8000; fly: true" cursor="rayOrigin: mouse"></a-camera>
         </a-entity>
 
         <!-- SISTEMA SOLAR GIGANTE CON ÓRBITAS REALISTAS -->
@@ -1020,6 +1020,12 @@ function isMobile() {
 
 if (isMobile()) {
   document.getElementById('mobile-controls').style.display = 'block';
+  // Habilitar look-controls táctil en móvil
+  var cameraEl = document.querySelector('a-camera');
+  if (cameraEl && cameraEl.components && cameraEl.components["look-controls"]) {
+    cameraEl.components["look-controls"].data.touchEnabled = true;
+    cameraEl.components["look-controls"].updateProperties();
+  }
   // Joystick izquierdo: rotación de cámara
   var joystickLeft = nipplejs.create({
     zone: document.getElementById('joystick-left'),
@@ -1039,7 +1045,6 @@ if (isMobile()) {
     restOpacity: 0.5
   });
   // Referencias a la cámara y entidad de usuario
-  var cameraEl = document.querySelector('a-camera');
   var entityEl = cameraEl.parentEl;
   // Variables para movimiento
   var move = {x:0, y:0};
