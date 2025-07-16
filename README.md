@@ -2,6 +2,8 @@
 
 Bienvenido a mi proyecto **Sistema Solar en Realidad Virtual (VR)**, una experiencia inmersiva donde puedes explorar los planetas de nuestro sistema solar y descubrir datos fascinantes sobre cada uno.
 
+https://github.com/user-attachments/assets/90fb8505-96d2-4a14-abbd-030242468855
+
 ## 🚀 Descripción
 
 Este proyecto fue desarrollado utilizando **A-Frame**, **JavaScript** y **HTML** para crear una simulación interactiva en VR del sistema solar. Puedes navegar libremente utilizando tu teclado y descubrir información interesante al interactuar con los planetas.
